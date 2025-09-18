@@ -1,6 +1,9 @@
 package HotBreads;
 
 import java.util.*;
+
+import javax.swing.JOptionPane;
+
 import java.sql.*;
 /*JDBC mini project: restaurant management system
  * 
@@ -155,4 +158,35 @@ public class GroceryDAO {
     	}
     	return groceries;
     }
+    
+    //get all expired groceries
+    
+    public List<Grocery> getExpiredGroceries(){
+    	
+    	List<Grocery> list = new ArrayList<>();
+    	String sql = "SELECT * FROM grocery WHERE expiry_left_in <= 0";
+    	
+    	
+    	try(Connection con = DriverManager.getConnection(url, user, pass);
+    			Statement st = con.createStatement();
+    			ResultSet rs = st.executeQuery(sql)){
+    		
+    		while(rs.next()) {
+    			
+    			Grocery g = new Grocery(
+    			rs.getInt("id"),
+    			rs.getString("name"),
+    			rs.getInt("count"),
+    			rs.getInt("expiry_left_in")
+    			);
+    			list.add(g);
+    			
+    		}
+    	}catch(SQLException e) {
+    		e.printStackTrace();
+    	}//try-catch
+    	return list;
+    }
+    
+    
 }//class 
